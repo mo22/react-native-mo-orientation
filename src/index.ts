@@ -1,121 +1,132 @@
 import * as React from 'react';
+import { StatefulEvent, Releaseable } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
-import { BehaviorSubjectWithCallback } from '../BehaviorSubjectWithCallback';
-import { EmitterSubscription } from 'react-native';
-import { createHOC } from '../createHOC';
-import { createObservableConsumer } from '../createObservableConsumer';
+
+export enum InterfaceOrientation {
+  PORTRAIT = 'portrait',
+  LANDSCAPELEFT = 'landscapeLeft',
+  LANDSCAPERIGHT = 'landscapeRight',
+}
+
+export type AllowedOrientations = Set<InterfaceOrientation>;
+
+export const AllowedOrientationsAny: AllowedOrientations = new Set<InterfaceOrientation>([
+  InterfaceOrientation.PORTRAIT, InterfaceOrientation.LANDSCAPELEFT, InterfaceOrientation.LANDSCAPERIGHT,
+]);
+export const AllowedOrientationsPortrait: AllowedOrientations = new Set<InterfaceOrientation>([
+  InterfaceOrientation.PORTRAIT,
+]);
+export const AllowedOrientationsLandscape: AllowedOrientations = new Set<InterfaceOrientation>([
+  InterfaceOrientation.LANDSCAPELEFT, InterfaceOrientation.LANDSCAPERIGHT,
+]);
 
 
 
-export type Orientation = 'portrait'|'landscapeLeft'|'landscapeRight';
-export type AllowedOrientations = Set<Orientation>;
-
-export const AllowedOrientationsAny: AllowedOrientations = new Set<Orientation>(['portrait', 'landscapeLeft', 'landscapeRight']);
-export const AllowedOrientationsPortrait: AllowedOrientations = new Set<Orientation>(['portrait']);
-export const AllowedOrientationsLandscape: AllowedOrientations = new Set<Orientation>(['landscapeLeft', 'landscapeRight']);
-
-
-
-const iosOrientationMap: { [k: number]: Orientation } = {
-  [ios.Orientation.Portrait]: 'portrait',
-  [ios.Orientation.PortraitUpsideDown]: 'portrait',
-  [ios.Orientation.LandscapeLeft]: 'landscapeLeft',
-  [ios.Orientation.LandscapeRight]: 'landscapeRight',
+const iosOrientationMap: { [k: number]: InterfaceOrientation } = {
+  [ios.Orientation.Portrait]: InterfaceOrientation.PORTRAIT,
+  [ios.Orientation.PortraitUpsideDown]: InterfaceOrientation.PORTRAIT,
+  [ios.Orientation.LandscapeLeft]: InterfaceOrientation.LANDSCAPELEFT,
+  [ios.Orientation.LandscapeRight]: InterfaceOrientation.LANDSCAPERIGHT,
 };
 
-const androidOrientationMap: { [k: number]: Orientation } = {
-  [android.Orientation.Portrait]: 'portrait',
-  [android.Orientation.LandscapeLeft]: 'landscapeLeft',
-  [android.Orientation.LandscapeRight]: 'landscapeRight',
+const androidOrientationMap: { [k: number]: InterfaceOrientation } = {
+  [android.Orientation.Portrait]: InterfaceOrientation.PORTRAIT,
+  [android.Orientation.LandscapeLeft]: InterfaceOrientation.LANDSCAPELEFT,
+  [android.Orientation.LandscapeRight]: InterfaceOrientation.LANDSCAPERIGHT,
 };
 
 
-export class OrientationTools {
+export class Orientation {
 
-  private static getInitialOrientation(): Orientation {
-    if (ios.Module && ios.Module.initialOrientation) {
-      return iosOrientationMap[ios.Module.initialOrientation.interfaceOrientation];
-    }
-    if (android.Module) {
-      android.Module.getOrientation().then((value) => {
-        const interfaceOrientation = androidOrientationMap[value];
-        if (interfaceOrientation === this.interfaceOrientation.getValue()) return;
-        this.interfaceOrientation.next(interfaceOrientation);
-      });
-    }
-    return 'portrait';
-  }
+  public static readonly ios = ios;
+  public static readonly android = android;
 
-  public static readonly interfaceOrientation = new BehaviorSubjectWithCallback<Orientation>(OrientationTools.getInitialOrientation(), (active) => {
-    OrientationTools.interfaceOrientationSubscribe(active);
-  });
+  public static readonly PORTRAIT = InterfaceOrientation.PORTRAIT;
+  public static readonly LANDSCAPELEFT = InterfaceOrientation.LANDSCAPELEFT;
+  public static readonly LANDSCAPERIGHT = InterfaceOrientation.LANDSCAPERIGHT;
 
-  private static interfaceOrientationSubscription?: EmitterSubscription;
-
-  private static interfaceOrientationSubscribe(active: boolean) {
-    if (this.interfaceOrientationSubscription) {
-      if (android.Module && android.Events) {
-        android.Module.stopOrientationEvent();
+  public static readonly interfaceOrientation = new StatefulEvent<InterfaceOrientation>(
+    (() => {
+      if (ios.Module && ios.Module.initialOrientation) {
+        return iosOrientationMap[ios.Module.initialOrientation.interfaceOrientation];
       }
-      this.interfaceOrientationSubscription.remove();
-      this.interfaceOrientationSubscription = undefined;
-    }
-    if (active) {
-      if (ios.Events) {
-        ios.Events.addListener('ReactNativeMoOrientation', (rs) => {
-          const interfaceOrientation = iosOrientationMap[rs.interfaceOrientation];
-          if (interfaceOrientation === this.interfaceOrientation.getValue()) return;
-          this.interfaceOrientation.next(interfaceOrientation);
+      if (android.Module) {
+        android.Module.getOrientation().then((val) => {
+          if (val) Orientation.interfaceOrientation.value = androidOrientationMap[val];
         });
-      } else if (android.Module && android.Events) {
+      }
+      return InterfaceOrientation.PORTRAIT;
+    })(),
+    (emit) => {
+      if (ios.Events && ios.Module) {
+        let cur: number|undefined;
+        const sub = ios.Events.addListener('ReactNativeMoOrientation', (rs) => {
+          if (rs.interfaceOrientation === cur) return;
+          cur = rs.interfaceOrientation;
+          emit(iosOrientationMap[rs.interfaceOrientation]);
+        });
+        ios.Module.startObservingOrientation();
+        return () => {
+          sub.remove();
+          ios.Module!.stopObservingOrientation();
+        };
+      } else if (android.Events && android.Module) {
+        let cur: number|undefined;
+        const sub = android.Events.addListener('ReactNativeMoOrientation', (rs) => {
+          if (rs.orientation === cur) return;
+          cur = rs.orientation;
+          emit(androidOrientationMap[rs.orientation]);
+        });
         android.Module.startOrientationEvent();
-        android.Events.addListener('ReactNativeMoOrientation', (rs) => {
-          const interfaceOrientation = androidOrientationMap[rs.orientation];
-          if (interfaceOrientation === this.interfaceOrientation.getValue()) return;
-          this.interfaceOrientation.next(interfaceOrientation);
-        });
+        return () => {
+          sub.remove();
+          android.Module!.stopOrientationEvent();
+        };
+      } else {
+        return () => {
+        };
       }
     }
-  }
+  );
 
   public static setAllowedOrientations(orientations: AllowedOrientations) {
     if (ios.Module) {
       ios.Module.setOrientationMask(
-        (orientations.has('portrait') ? ios.OrientationMask.Portrait : 0) +
-        (orientations.has('landscapeLeft') ? ios.OrientationMask.LandscapeLeft : 0) +
-        (orientations.has('landscapeRight') ? ios.OrientationMask.LandscapeRight : 0)
+        (orientations.has(InterfaceOrientation.PORTRAIT) ? ios.OrientationMask.Portrait : 0) +
+        (orientations.has(InterfaceOrientation.LANDSCAPELEFT) ? ios.OrientationMask.LandscapeLeft : 0) +
+        (orientations.has(InterfaceOrientation.LANDSCAPERIGHT) ? ios.OrientationMask.LandscapeRight : 0)
       );
-      if (!orientations.has(this.interfaceOrientation.getValue())) {
-        if (orientations.has('portrait')) {
+      if (!orientations.has(this.interfaceOrientation.value)) {
+        if (orientations.has(InterfaceOrientation.PORTRAIT)) {
           ios.Module.setOrientation(ios.Orientation.Portrait);
-        } else if (orientations.has('landscapeLeft')) {
+        } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT)) {
           ios.Module.setOrientation(ios.Orientation.LandscapeLeft);
-        } else if (orientations.has('landscapeRight')) {
+        } else if (orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
           ios.Module.setOrientation(ios.Orientation.LandscapeRight);
         }
       }
     } else if (android.Module) {
-      if (orientations.has('portrait') && orientations.has('landscapeLeft') && orientations.has('landscapeRight')) {
+      if (orientations.has(InterfaceOrientation.PORTRAIT) && orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.Sensor);
-      } else if (orientations.has('landscapeLeft') && orientations.has('landscapeRight')) {
+      } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.SensorLandscape);
-      } else if (orientations.has('portrait')) {
+      } else if (orientations.has(InterfaceOrientation.PORTRAIT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.Portrait);
-      } else if (orientations.has('landscapeLeft')) {
+      } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.ReverseLandscape);
-      } else if (orientations.has('landscapeRight')) {
+      } else if (orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.Landscape);
       }
     }
   }
 
   private static allowedOrientationsStack: AllowedOrientations[] = [];
-  public static pushAllowedOrientations(orientations: AllowedOrientations) {
+  public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
     return {
-      remove: () => {
+      release: () => {
         this.allowedOrientationsStack = this.allowedOrientationsStack.filter((i) => i !== orientations);
         this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsPortrait);
       },
@@ -156,7 +167,7 @@ export class OrientationTools {
 //   }
 // }
 
-export const OrientationConsumer = createObservableConsumer(OrientationTools.interfaceOrientation);
+// export const OrientationConsumer = createObservableConsumer(OrientationTools.interfaceOrientation);
 
 export interface OrientationInjectedProps {
   orientation: Orientation;
@@ -184,39 +195,47 @@ export interface OrientationInjectedProps {
 //   return withStatics as any;
 // }
 
-export const withOrientation = createHOC((Component, props, ref) => (
-  <OrientationConsumer>
-    {(orientation) => (
-      <Component {...props} orientation={orientation} ref={ref} />
-    )}
-  </OrientationConsumer>
-));
+// export const withOrientation = createHOC((Component, props, ref) => (
+//   <OrientationConsumer>
+//     {(orientation) => (
+//       <Component {...props} orientation={orientation} ref={ref} />
+//     )}
+//   </OrientationConsumer>
+// ));
+
+
 
 export class OrientationLock extends React.PureComponent<{
   allowed: AllowedOrientations|'portrait'|'landscape'|'any'|Orientation[];
 }> {
-  private lock: { remove: () => void; };
+  private lock?: Releaseable;
 
   private resolveAllowed(allowed: OrientationLock['props']['allowed']): AllowedOrientations {
     if (allowed === 'landscape') return AllowedOrientationsLandscape;
     if (allowed === 'any') return AllowedOrientationsAny;
-    if (typeof allowed === 'string') return new Set([allowed]);
-    if (Array.isArray(allowed)) return new Set(allowed);
+    if (typeof allowed === 'string') return new Set([allowed]) as AllowedOrientations;
+    if (Array.isArray(allowed)) return new Set(allowed) as AllowedOrientations;
     return allowed;
   }
 
   public componentDidMount() {
-    this.lock = OrientationTools.pushAllowedOrientations(this.resolveAllowed(this.props.allowed));
+    this.lock = Orientation.pushAllowedOrientations(this.resolveAllowed(this.props.allowed));
   }
 
   public componentWillUnmount() {
-    this.lock.remove();
+    if (this.lock) {
+      this.lock.release();
+      this.lock = undefined;
+    }
   }
 
   public componentDidUpdate(prevProps: OrientationLock['props']) {
     if (JSON.stringify(Array.from(this.resolveAllowed(this.props.allowed))) !== JSON.stringify(Array.from(this.resolveAllowed(prevProps.allowed)))) {
-      this.lock.remove();
-      this.lock = OrientationTools.pushAllowedOrientations(this.resolveAllowed(this.props.allowed));
+      if (this.lock) {
+        this.lock.release();
+        this.lock = undefined;
+      }
+      this.lock = Orientation.pushAllowedOrientations(this.resolveAllowed(this.props.allowed));
     }
   }
 
