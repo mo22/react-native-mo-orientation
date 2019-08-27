@@ -8,6 +8,18 @@ const AppNavigator = createStackNavigator({
       title: 'Menu',
     },
   },
+  LockedOrientation: {
+    screen: require('./LockedOrientation').default,
+    navigationOptions: {
+      title: 'LockedOrientation',
+    },
+  },
+  SelectOrientation: {
+    screen: require('./SelectOrientation').default,
+    navigationOptions: {
+      title: 'SelectOrientation',
+    },
+  },
 });
 
 const AppContainer = createAppContainer(AppNavigator);

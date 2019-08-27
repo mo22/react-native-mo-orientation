@@ -23,3 +23,9 @@ if (Vibrate.android.Module) {
   });
 }
 ```
+
+## TODO
+
+- [ ] example: base screen with switches to select allowed orientation
+- [ ] example: show value of current orientation
+- [ ] example: navigate to sub page with locked orientation
