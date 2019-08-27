@@ -137,42 +137,43 @@ export class Orientation {
 
 
 
-// export interface OrientationConsumerProps {
-//   children: (orientation: Orientation) => React.ReactElement;
-// }
-//
-// export class OrientationConsumer extends React.PureComponent<OrientationConsumerProps, {
-//   orientation: Orientation;
-// }> {
-//   public state = { orientation: OrientationTools.interfaceOrientation.getValue() };
-//   private subscription: Subscription;
-//
-//   public constructor(props: OrientationConsumerProps) {
-//     super(props);
-//     this.state.orientation = OrientationTools.interfaceOrientation.getValue();
-//   }
-//
-//   public componentDidMount() {
-//     this.subscription = OrientationTools.interfaceOrientation.subscribe((value) => {
-//       this.setState({ orientation: value });
-//     });
-//   }
-//
-//   public componentWillUnmount() {
-//     this.subscription.unsubscribe();
-//   }
-//
-//   public render() {
-//     return this.props.children(this.state.orientation);
-//   }
-// }
-
-// export const OrientationConsumer = createObservableConsumer(OrientationTools.interfaceOrientation);
-
-export interface OrientationInjectedProps {
-  orientation: Orientation;
+export interface OrientationConsumerProps {
+  children: (orientation: Orientation) => React.ReactElement;
 }
 
+export class OrientationConsumer extends React.PureComponent<OrientationConsumerProps, {
+  orientation: Orientation;
+}> {
+  public state = { orientation: Orientation.interfaceOrientation.value };
+  private subscription?: Releaseable;
+
+  public constructor(props: OrientationConsumerProps) {
+    super(props);
+    this.state.orientation = Orientation.interfaceOrientation.value;
+  }
+
+  public componentDidMount() {
+    this.subscription = Orientation.interfaceOrientation.subscribe((value) => {
+      this.setState({ orientation: value });
+    });
+  }
+
+  public componentWillUnmount() {
+    if (this.subscription) {
+      this.subscription.release();
+      this.subscription = undefined;
+    }
+  }
+
+  public render() {
+    return this.props.children(this.state.orientation);
+  }
+}
+
+// export interface OrientationInjectedProps {
+//   orientation: Orientation;
+// }
+//
 // export function withOrientation<
 //   P extends OrientationInjectedProps,
 //   S,
