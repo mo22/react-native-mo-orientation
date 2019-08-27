@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatefulEvent } from 'mo-core';
+import { StatefulEvent, Releaseable } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
 export declare enum InterfaceOrientation {
@@ -20,9 +20,7 @@ export declare class Orientation {
     static readonly interfaceOrientation: StatefulEvent<InterfaceOrientation>;
     static setAllowedOrientations(orientations: AllowedOrientations): void;
     private static allowedOrientationsStack;
-    static pushAllowedOrientations(orientations: AllowedOrientations): {
-        remove: () => void;
-    };
+    static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable;
 }
 export interface OrientationInjectedProps {
     orientation: Orientation;

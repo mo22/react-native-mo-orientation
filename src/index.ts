@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StatefulEvent } from 'mo-core';
+import { StatefulEvent, Releaseable } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
 
@@ -122,11 +122,11 @@ export class Orientation {
   }
 
   private static allowedOrientationsStack: AllowedOrientations[] = [];
-  public static pushAllowedOrientations(orientations: AllowedOrientations) {
+  public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
     return {
-      remove: () => {
+      release: () => {
         this.allowedOrientationsStack = this.allowedOrientationsStack.filter((i) => i !== orientations);
         this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsPortrait);
       },
@@ -208,7 +208,7 @@ export interface OrientationInjectedProps {
 export class OrientationLock extends React.PureComponent<{
   allowed: AllowedOrientations|'portrait'|'landscape'|'any'|Orientation[];
 }> {
-  private lock?: { remove: () => void; };
+  private lock?: Releaseable;
 
   private resolveAllowed(allowed: OrientationLock['props']['allowed']): AllowedOrientations {
     if (allowed === 'landscape') return AllowedOrientationsLandscape;
@@ -224,7 +224,7 @@ export class OrientationLock extends React.PureComponent<{
 
   public componentWillUnmount() {
     if (this.lock) {
-      this.lock.remove();
+      this.lock.release();
       this.lock = undefined;
     }
   }
@@ -232,7 +232,7 @@ export class OrientationLock extends React.PureComponent<{
   public componentDidUpdate(prevProps: OrientationLock['props']) {
     if (JSON.stringify(Array.from(this.resolveAllowed(this.props.allowed))) !== JSON.stringify(Array.from(this.resolveAllowed(prevProps.allowed)))) {
       if (this.lock) {
-        this.lock.remove();
+        this.lock.release();
         this.lock = undefined;
       }
       this.lock = Orientation.pushAllowedOrientations(this.resolveAllowed(this.props.allowed));
