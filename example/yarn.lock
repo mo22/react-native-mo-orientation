@@ -5318,10 +5318,10 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-vibrate@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-mo-vibrate/-/react-native-mo-vibrate-0.1.2.tgz#eb8b62fd353216ebbc6a6cf4fda250989d54a58b"
-  integrity sha512-OX5xyv4otzoeG0h1mYzpGfjNLBHAWyLeKarV+JYzZ2xLvbw5YBjFfcVCbIyC3DmQqRPyxGukIEcnkUNBR8mmKw==
+react-native-mo-orientation@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-mo-orientation/-/react-native-mo-orientation-0.1.0.tgz#ea63046c563a9beef51083a714e28b7cef9805a2"
+  integrity sha512-MxJovoY8i5NMZxS6qk49ZM6/5fapSM726tYo6rlFVUN5goiKaaA83MIBPJAANNDsZMXBpw4IZIob7khIbQWuIw==
 
 react-native-ratings@^6.3.0:
   version "6.4.0"
