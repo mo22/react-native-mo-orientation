@@ -1,28 +1,35 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, NativeEventEmitter, EmitterSubscription, Platform } from 'react-native';
 
-export enum VibrateType {
-  LONG_PRESS = 0,
-  VIRTUAL_KEY = 1,
-  KEYBOARD_TAP = 3,
-  CLOCK_TICK = 4,
-  CALENDAR_DATE = 5,
-  CONTEXT_CLICK = 6,
-  KEYBOARD_RELEASE = 7,
-  VIRTUAL_KEY_RELEASE = 8,
-  TEXT_HANDLE_MOVE = 9,
-  ENTRY_BUMP = 10,
-  DRAG_CROSSING = 11,
-  GESTURE_START = 12,
-  GESTURE_END = 13,
-  EDGE_SQUEEZE = 14,
-  EDGE_RELEASE = 15,
-  CONFIRM = 16,
-  REJECT = 17,
+export enum Orientation {
+  Portrait = 0,
+  LandscapeLeft = 1,
+  PortraitUpsideDown = 2,
+  LandscapeRight = 3,
+}
+
+export enum RequestOrientation {
+  Landscape = 0,
+  Portrait = 1,
+  Sensor = 4,
+  SensorLandscape = 6,
+  SensorPortrait = 7,
+  ReverseLandscape = 8,
+  ReversePortrait = 9,
 }
 
 export interface Module {
-  vibrate(type: VibrateType): void;
-  vibratePattern(args: { pattern: number[]; amplitude?: number[]; repeat?: number; }): void;
+  startOrientationEvent(): void;
+  stopOrientationEvent(): void;
+  setRequestedOrientation(orientation: RequestOrientation): void;
+  getOrientation(): Promise<number>;
 }
 
-export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoVibrate as Module : undefined;
+export interface OrientationEvent {
+  orientation: number;
+}
+
+export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoOrientation as Module : undefined;
+
+export const Events = Module ? new NativeEventEmitter(NativeModules.ReactNativeMoOrientation) as {
+  addListener(eventType: 'ReactNativeMoOrientation', listener: (event: OrientationEvent) => void): EmitterSubscription;
+} : undefined;

@@ -1,21 +1,38 @@
-package de.mxs.reactnativemoorientation;
+package de.mxs.reactnativemolayout;
 
 import android.app.Activity;
+import android.content.ComponentCallbacks;
 import android.content.Context;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.view.HapticFeedbackConstants;
-import android.view.View;
+import android.content.res.Configuration;
+import android.view.Display;
+import android.view.WindowManager;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import javax.annotation.Nonnull;
 
 public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
+
+    private ComponentCallbacks componentCallbacks = new ComponentCallbacks() {
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+            if (windowManager == null) throw new RuntimeException("windowManager null");
+            final Display display = windowManager.getDefaultDisplay();
+            WritableMap args = Arguments.createMap();
+            args.putInt("orientation", display.getRotation());
+            getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoOrientation", args);
+        }
+        @Override
+        public void onLowMemory() {
+        }
+    };
 
     ReactNativeMoOrientation(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
@@ -27,52 +44,39 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
         return "ReactNativeMoOrientation";
     }
 
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void vibrate(int type) {
-        // https://developer.android.com/reference/android/view/HapticFeedbackConstants
-        getReactApplicationContext().runOnUiQueueThread(() -> {
-            Activity activity = getReactApplicationContext().getCurrentActivity();
-            if (activity == null) return;
-            View view = activity.getWindow().getDecorView();
-            view.performHapticFeedback(type, HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-        });
+    @Override
+    public void onCatalystInstanceDestroy() {
+        stopOrientationEvent();
+        super.onCatalystInstanceDestroy();
     }
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void vibratePattern(ReadableMap args) {
-        long[] pattern;
-        {
-            ReadableArray tmp = args.getArray("pattern");
-            if (tmp == null) {
-                throw new RuntimeException("pattern is required");
-            }
-            pattern = new long[tmp.size()];
-            for (int i=0; i<pattern.length; i++) {
-                pattern[i] = tmp.getInt(i);
-            }
-        }
-        int[] amplitude = new int[pattern.length];
-        {
-            ReadableArray tmp = args.getArray("amplitude");
-            if (tmp == null || tmp.size() != amplitude.length) {
-                throw new RuntimeException("amplitude is required and must have same length as pattern");
-            }
-            for (int i=0; i<amplitude.length; i++) {
-                amplitude[i] = tmp.getInt(i);
-            }
-        }
-        int repeat = args.getInt("repeat");
-        getReactApplicationContext().runOnUiQueueThread(() -> {
-            Vibrator vibrator = (Vibrator)getReactApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                VibrationEffect vibe = VibrationEffect.createWaveform(pattern, amplitude, repeat);
-                vibrator.vibrate(vibe);
-            } else {
-                vibrator.vibrate(pattern, repeat);
-            }
-        });
+    public void startOrientationEvent() {
+        getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
+    }
+
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    @ReactMethod
+    public void stopOrientationEvent() {
+        getReactApplicationContext().unregisterComponentCallbacks(componentCallbacks);
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void setRequestedOrientation(int orientation) {
+        final Activity activity = getCurrentActivity();
+        if (activity == null) return;
+        activity.setRequestedOrientation(orientation);
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void getOrientation(Promise promise) {
+        final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager == null) throw new RuntimeException("windowManager null");
+        final Display display = windowManager.getDefaultDisplay();
+        promise.resolve(display.getRotation());
     }
 
 }
