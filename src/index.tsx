@@ -122,13 +122,15 @@ export class Orientation {
   }
 
   private static allowedOrientationsStack: AllowedOrientations[] = [];
+
   public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
     return {
       release: () => {
         this.allowedOrientationsStack = this.allowedOrientationsStack.filter((i) => i !== orientations);
-        this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsPortrait);
+        // what is default?
+        this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsAny);
       },
     };
   }

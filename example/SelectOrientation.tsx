@@ -21,7 +21,11 @@ export default class SelectOrientation extends React.PureComponent<NavigationInj
     return (
       <ScrollView>
 
-        <OrientationLock allowed="portrait" />
+        <OrientationLock allowed={new Set([
+          ...(this.state.portrait ? [InterfaceOrientation.PORTRAIT] : []),
+          ...(this.state.landscapeLeft ? [InterfaceOrientation.LANDSCAPELEFT] : []),
+          ...(this.state.landscapeRight ? [InterfaceOrientation.LANDSCAPERIGHT] : []),
+        ])} />
 
         <ListItem
           title="Orientation"
