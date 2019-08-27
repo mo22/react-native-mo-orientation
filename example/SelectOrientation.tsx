@@ -2,21 +2,50 @@ import * as React from 'react';
 import { ScrollView } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { NavigationActions, NavigationInjectedProps } from 'react-navigation';
+import { withOrientationDecorator, InterfaceOrientation, OrientationInjectedProps, OrientationLock } from 'react-native-mo-orientation';
 
-export default class SelectOrientation extends React.PureComponent<NavigationInjectedProps> {
+function keysOf<T extends {}>(obj: T): (keyof T)[] {
+  const objany = obj as any;
+  return Object.keys(obj).filter((i) => typeof objany[objany[i]] !== 'number') as any;
+}
+
+@withOrientationDecorator
+export default class SelectOrientation extends React.PureComponent<NavigationInjectedProps & OrientationInjectedProps> {
+  public state = {
+    portrait: true,
+    landscapeLeft: true,
+    landscapeRight: true,
+  };
+
   public render() {
     return (
       <ScrollView>
 
-        <ListItem
-          title="Orientation"
-          chevron={true}
-        />
+        <OrientationLock allowed="portrait" />
 
         <ListItem
-          title="Allow Portrait"
-          checkBox={{
-            checked: true,
+          title="Orientation"
+          rightTitle={String(this.props.orientation)}
+        />
+
+        {keysOf(InterfaceOrientation).map((i) => (
+          <ListItem
+            key={i}
+            title={'Allow ' + i}
+            switch={{
+              value: (this.state as any)[i],
+              onValueChange: (value) => {
+                this.setState({ [i as any]: value });
+              },
+            }}
+          />
+        ))}
+
+        <ListItem
+          title="LockedOrientation"
+          chevron={true}
+          onPress={() => {
+            this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'LockedOrientation' }));
           }}
         />
 
