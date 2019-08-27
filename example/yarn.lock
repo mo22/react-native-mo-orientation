@@ -4576,6 +4576,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mo-core@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/mo-core/-/mo-core-0.1.1.tgz#bfb68a95ea1fead9c61b43b8a1500ce58708a5bd"
+  integrity sha512-n2zpOQjLlB3wZNLLroy75uWwD4XO4Qayxc1swXay4sgTSXJ/OXElG23KF/kolK2xE+o5XHcbwMMegxe+w0K+5Q==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
@@ -5334,10 +5339,12 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-orientation@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-mo-orientation/-/react-native-mo-orientation-0.1.0.tgz#ea63046c563a9beef51083a714e28b7cef9805a2"
-  integrity sha512-MxJovoY8i5NMZxS6qk49ZM6/5fapSM726tYo6rlFVUN5goiKaaA83MIBPJAANNDsZMXBpw4IZIob7khIbQWuIw==
+react-native-mo-orientation@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-mo-orientation/-/react-native-mo-orientation-0.1.1.tgz#cf289020e89f09e983c07154de8b32f391c02dcf"
+  integrity sha512-L2ZYApBw1qyInMX+U3kQhKVb4bzcwLYSP9z0bQK1HUmGnNXgcKm7z7uMKXu7Ash194ZZ3BhEkuB4pIH3q43wxA==
+  dependencies:
+    mo-core "^0.1.1"
 
 react-native-ratings@^6.3.0:
   version "6.4.0"

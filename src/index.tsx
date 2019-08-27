@@ -66,10 +66,10 @@ export class Orientation {
           cur = rs.interfaceOrientation;
           emit(iosOrientationMap[rs.interfaceOrientation]);
         });
-        ios.Module.startObservingOrientation();
+        // ios.Module.startObservingOrientation();
         return () => {
           sub.remove();
-          ios.Module!.stopObservingOrientation();
+          // ios.Module!.stopObservingOrientation();
         };
       } else if (android.Events && android.Module) {
         let cur: number|undefined;
