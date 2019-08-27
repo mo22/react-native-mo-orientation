@@ -170,39 +170,70 @@ export class OrientationConsumer extends React.PureComponent<OrientationConsumer
   }
 }
 
-// export interface OrientationInjectedProps {
-//   orientation: Orientation;
-// }
-//
-// export function withOrientation<
-//   P extends OrientationInjectedProps,
-//   S,
-//   T extends React.ComponentClass<P, S>,
-// >(
-//   component: T & React.ComponentClass<P>
-// ): (
-//   T &
-//   ( new (props: Omit<P, keyof OrientationInjectedProps>, context?: any) => React.Component<Omit<P, keyof OrientationInjectedProps>, S> )
-// ) {
-//   const Component = component as any;
-//   const forwardRef = React.forwardRef<T, P>((props, ref) => (
-//     <OrientationConsumer>
-//       {(orientation) => (
-//         <Component {...props} orientation={orientation} ref={ref} />
-//       )}
-//     </OrientationConsumer>
-//   ));
-//   const withStatics = hoistStatics(forwardRef, Component as any);
-//   return withStatics as any;
-// }
 
-// export const withOrientation = createHOC((Component, props, ref) => (
-//   <OrientationConsumer>
-//     {(orientation) => (
-//       <Component {...props} orientation={orientation} ref={ref} />
-//     )}
-//   </OrientationConsumer>
-// ));
+
+export interface OrientationInjectedProps {
+  orientation: Orientation;
+}
+
+export function withOrientation<
+  Props extends OrientationInjectedProps,
+  // Props,
+>(
+  component: React.ComponentType<Props>
+  // component: React.ComponentType<Props & SafeAreaInjectedProps>
+): (
+  // React.ComponentType<Props>
+  React.ComponentType<Omit<Props, keyof OrientationInjectedProps>>
+) {
+  const Component = component as React.ComponentType<any>; // @TODO hmpf.
+  // const Component = component;
+  return React.forwardRef((props: Omit<Props, keyof OrientationInjectedProps>, ref) => (
+    <OrientationConsumer>
+      {(orientation) => (
+        <Component orientation={orientation} ref={ref} {...props} />
+      )}
+    </OrientationConsumer>
+  )) as any;
+}
+
+export function withOrientationDecorator<
+  Props extends OrientationInjectedProps,
+  ComponentType extends React.ComponentType<Props>
+>(
+  component: ComponentType & React.ComponentType<Props>
+): (
+  ComponentType &
+  ( new (props: Omit<Props, keyof OrientationInjectedProps>, context?: any) => React.Component<Omit<Props, keyof OrientationInjectedProps>> )
+) {
+  const Component = component as any;
+  const res = (props: Omit<Props, keyof OrientationInjectedProps>) => (
+    <OrientationConsumer>
+      {(orientation) => (
+        <Component {...props} orientation={orientation} />
+      )}
+    </OrientationConsumer>
+  );
+  res.component = component;
+  const skip: { [key: string]: boolean; } = {
+    arguments: true,
+    caller: true,
+    callee: true,
+    name: true,
+    prototype: true,
+    length: true,
+  };
+  for (const key of [...Object.getOwnPropertyNames(component), ...Object.getOwnPropertySymbols(component)]) {
+    if (typeof key === 'string' && skip[key]) continue;
+    const descriptor = Object.getOwnPropertyDescriptor(component, key);
+    if (!descriptor) continue;
+    try {
+      Object.defineProperty(res, key, descriptor);
+    } catch (e) {
+    }
+  }
+  return res as any;
+}
 
 
 
