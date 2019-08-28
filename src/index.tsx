@@ -66,10 +66,10 @@ export class Orientation {
           cur = rs.interfaceOrientation;
           emit(iosOrientationMap[rs.interfaceOrientation]);
         });
-        // ios.Module.startObservingOrientation();
+        ios.Module.startObservingOrientation();
         return () => {
           sub.remove();
-          // ios.Module!.stopObservingOrientation();
+          ios.Module!.stopObservingOrientation();
         };
       } else if (android.Events && android.Module) {
         let cur: number|undefined;
@@ -122,15 +122,13 @@ export class Orientation {
   }
 
   private static allowedOrientationsStack: AllowedOrientations[] = [];
-
   public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
     return {
       release: () => {
         this.allowedOrientationsStack = this.allowedOrientationsStack.filter((i) => i !== orientations);
-        // what is default?
-        this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsAny);
+        this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsPortrait);
       },
     };
   }
