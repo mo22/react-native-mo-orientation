@@ -84,7 +84,7 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
-    NSLog(@"setOrientationMask %d", mask);
+//    NSLog(@"ReactNativeMoOrientation.setOrientationMask %d", mask);
     g_reactNativeMoOrientationMask = mask;
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIViewController attemptRotationToDeviceOrientation];
@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
 }
 
 RCT_EXPORT_METHOD(setOrientation:(int)orientation) {
-    NSLog(@"setOrientation %d", orientation);
+//    NSLog(@"ReactNativeMoOrientation.setOrientation %d", orientation);
     dispatch_async(dispatch_get_main_queue(), ^{
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:orientation] forKey:@"orientation"];

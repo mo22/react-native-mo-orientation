@@ -18,8 +18,7 @@ export enum RequestOrientation {
 }
 
 export interface Module {
-  startOrientationEvent(): void;
-  stopOrientationEvent(): void;
+  enableOrientationEvent(enable: boolean): void;
   setRequestedOrientation(orientation: RequestOrientation): void;
   getOrientation(): Promise<number>;
 }

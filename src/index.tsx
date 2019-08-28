@@ -66,10 +66,10 @@ export class Orientation {
           cur = rs.interfaceOrientation;
           emit(iosOrientationMap[rs.interfaceOrientation]);
         });
-        ios.Module.startObservingOrientation();
+        ios.Module.enableOrientationEvent(true);
         return () => {
           sub.remove();
-          ios.Module!.stopObservingOrientation();
+          ios.Module!.enableOrientationEvent(false);
         };
       } else if (android.Events && android.Module) {
         let cur: number|undefined;
@@ -78,10 +78,10 @@ export class Orientation {
           cur = rs.orientation;
           emit(androidOrientationMap[rs.orientation]);
         });
-        android.Module.startOrientationEvent();
+        android.Module.enableOrientationEvent(true);
         return () => {
           sub.remove();
-          android.Module!.stopOrientationEvent();
+          android.Module!.enableOrientationEvent(false);
         };
       } else {
         return () => {

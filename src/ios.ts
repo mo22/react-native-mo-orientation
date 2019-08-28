@@ -16,8 +16,7 @@ export enum OrientationMask {
 
 export interface Module {
   initialOrientation: { deviceOrientation: Orientation; interfaceOrientation: Orientation; };
-  startObservingOrientation(): void;
-  stopObservingOrientation(): void;
+  enableOrientationEvent(enable: boolean): void;
   setOrientationMask(mask: OrientationMask): void;
   setOrientation(orientation: Orientation): void;
 }
