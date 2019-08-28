@@ -37,9 +37,9 @@ export default class SelectOrientation extends React.PureComponent<NavigationInj
             key={i}
             title={'Allow ' + i}
             switch={{
-              value: (this.state as any)[i],
+              value: this.state[InterfaceOrientation[i]],
               onValueChange: (value) => {
-                this.setState({ [i as any]: value });
+                this.setState({ [InterfaceOrientation[i]]: value });
               },
             }}
           />
