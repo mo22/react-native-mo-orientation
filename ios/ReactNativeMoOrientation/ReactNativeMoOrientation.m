@@ -61,17 +61,19 @@ RCT_EXPORT_MODULE()
     return constants;
 }
 
-- (void)startObserving {
-    // @TODO: rename to enableEvent...
-    NSLog(@"ReactNativeMoOrientation.startObserving");
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
+    NSLog(@"ReactNativeMoOrientation.enableSafeAreaEvent %d", enable);
+    if (enable) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    }
 }
 
 - (void)stopObserving {
-    NSLog(@"ReactNativeMoOrientation.stopObserving");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    [self enableOrientationEvent:NO];
 }
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
