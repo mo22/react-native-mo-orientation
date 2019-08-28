@@ -62,7 +62,7 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
-    NSLog(@"ReactNativeMoOrientation.enableSafeAreaEvent %d", enable);
+//    NSLog(@"ReactNativeMoOrientation.enableSafeAreaEvent %d", enable);
     if (enable) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];

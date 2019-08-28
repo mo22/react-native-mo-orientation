@@ -46,20 +46,17 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
 
     @Override
     public void onCatalystInstanceDestroy() {
-        stopOrientationEvent();
+        enableOrientationEvent(false);
         super.onCatalystInstanceDestroy();
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void startOrientationEvent() {
-        getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
     }
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     @ReactMethod
-    public void stopOrientationEvent() {
+    public void enableOrientationEvent(boolean enable) {
         getReactApplicationContext().unregisterComponentCallbacks(componentCallbacks);
+        if (enable) {
+            getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
+        }
     }
 
     @SuppressWarnings("unused")
