@@ -5,21 +5,15 @@ Lets you vibrate your phone from react-native
 ## Usage
 
 ```ts
-import { Vibrate } from 'react-native-mo-vibrate';
+import { Orientation } from 'react-native-mo-orientation';
 
-Vibrate.vibrate(Vibrate.Type.TAP);
+Orientation.xxxx
+
+withOrientation
+
+OrientationConsumer
 ```
 
-## Advanced
-
-```ts
-import { Vibrate } from 'react-native-mo-vibrate';
-
-if (Vibrate.android.Module) {
-  Vibrate.android.Module.vibratePattern({
-    pattern: [ 500, 100, 500 ],
-    amplitude; [ 255, 127, 255 ],
-    repeat: 3,
-  });
-}
-```
+## TODO
+- [ ] android does not trigger orientation change between landscape left and right
+- [ ] inline docs
