@@ -32,8 +32,10 @@ RCT_EXPORT_MODULE()
 }
 
 + (void)swizzleSupportedInterfaceOrientationsForWindow {
+    NSLog(@"XXX swizzleSupportedInterfaceOrientationsForWindow");
     static id<UIApplicationDelegate> appDelegate;
     if (appDelegate == nil) {
+        NSLog(@"XXX swizzleSupportedInterfaceOrientationsForWindow GO");
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:supportedInterfaceOrientationsForWindow:));
         appDelegate = RCTSharedApplication().delegate;
         [UIApplication sharedApplication].delegate = nil;
@@ -69,6 +71,7 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    NSLog(@"XXX deviceOrientationDidChange %d %d", deviceOrientation, interfaceOrientation);
     [self sendEventWithName:@"ReactNativeMoOrientation" body:@{
         @"deviceOrientation": @(deviceOrientation),
         @"interfaceOrientation": @(interfaceOrientation),
