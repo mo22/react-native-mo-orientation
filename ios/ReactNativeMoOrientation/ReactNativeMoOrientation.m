@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    NSLog(@"XXX deviceOrientationDidChange %ld %d", (long)deviceOrientation, interfaceOrientation);
+    NSLog(@"XXX deviceOrientationDidChange %ld %ld", (long)deviceOrientation, (long)interfaceOrientation);
     [self sendEventWithName:@"ReactNativeMoOrientation" body:@{
         @"deviceOrientation": @(deviceOrientation),
         @"interfaceOrientation": @(interfaceOrientation),
