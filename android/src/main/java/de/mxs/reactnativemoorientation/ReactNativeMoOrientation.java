@@ -58,6 +58,8 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
         }
     };
 
+    private boolean orientationEventEnabled = false;
+
     ReactNativeMoOrientation(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -77,13 +79,17 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
     @SuppressWarnings({"unused", "WeakerAccess"})
     @ReactMethod
     public void enableOrientationEvent(boolean enable) {
-        getReactApplicationContext().unregisterComponentCallbacks(componentCallbacks);
-        getReactApplicationContext().unregisterReceiver(configurationChangedReceiver);
-        if (enable) {
-            getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-            getReactApplicationContext().registerReceiver(configurationChangedReceiver, intentFilter);
+        if (enable != orientationEventEnabled) {
+            orientationEventEnabled = enable;
+            if (enable) {
+                getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+                getReactApplicationContext().registerReceiver(configurationChangedReceiver, intentFilter);
+            } else {
+                getReactApplicationContext().unregisterComponentCallbacks(componentCallbacks);
+                getReactApplicationContext().unregisterReceiver(configurationChangedReceiver); // uff.
+            }
         }
     }
 
