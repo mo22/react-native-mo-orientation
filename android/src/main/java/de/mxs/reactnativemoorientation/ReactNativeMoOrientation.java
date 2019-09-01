@@ -2,7 +2,6 @@ package de.mxs.reactnativemoorientation;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,9 +23,13 @@ import javax.annotation.Nonnull;
 
 public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
 
-    private ComponentCallbacks componentCallbacks = new ComponentCallbacks() {
+    private BroadcastReceiver configurationChangedReceiver = new BroadcastReceiver() {
         @Override
-        public void onConfigurationChanged(Configuration newConfig) {
+        public void onReceive(Context context, Intent intent) {
+            Log.i("XXX", "configurationChangedReceiver.onReceive " + intent);
+
+            Configuration newConfig = getReactApplicationContext().getResources().getConfiguration();
+
             final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
             if (windowManager == null) throw new RuntimeException("windowManager null");
             final Display display = windowManager.getDefaultDisplay();
@@ -45,16 +48,7 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
             args.putInt("orientation", newConfig.orientation);
             args.putInt("rotation", display.getRotation());
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoOrientation", args);
-        }
-        @Override
-        public void onLowMemory() {
-        }
-    };
 
-    private BroadcastReceiver configurationChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("XXX", "configurationChangedReceiver.onReceive " + intent);
         }
     };
 
@@ -82,13 +76,11 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
         if (enable != orientationEventEnabled) {
             orientationEventEnabled = enable;
             if (enable) {
-                getReactApplicationContext().registerComponentCallbacks(componentCallbacks);
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
                 getReactApplicationContext().registerReceiver(configurationChangedReceiver, intentFilter);
             } else {
-                getReactApplicationContext().unregisterComponentCallbacks(componentCallbacks);
-                getReactApplicationContext().unregisterReceiver(configurationChangedReceiver); // uff.
+                getReactApplicationContext().unregisterReceiver(configurationChangedReceiver);
             }
         }
     }
