@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -25,8 +26,11 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
             final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
             if (windowManager == null) throw new RuntimeException("windowManager null");
             final Display display = windowManager.getDefaultDisplay();
+//            Configuration.ORIENTATION_LANDSCAPE
+            Log.i("XXX", "onConfigurationChanged " + newConfig.orientation + " " + display.getRotation());
             WritableMap args = Arguments.createMap();
-            args.putInt("orientation", display.getRotation());
+            args.putInt("orientation", newConfig.orientation);
+            args.putInt("rotation", display.getRotation());
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoOrientation", args);
         }
         @Override
