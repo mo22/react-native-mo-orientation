@@ -2,13 +2,6 @@
 
 Lets you query and lock the device orientation
 
-## Installation
-
-iOS just works.
-
-For android make sure you got `android:configChanges="orientation|..."` in your
-manifest.
-
 ## Usage
 
 ```ts
@@ -36,5 +29,5 @@ return (
 ```
 
 ## TODO
-- [ ] android does not trigger orientation change between landscape left and right
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
+  display.getRotation() or configuration.getOrientation() ?
