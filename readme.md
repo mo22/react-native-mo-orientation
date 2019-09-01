@@ -29,10 +29,17 @@ return (
 ```
 
 ## Notes
-- on iPad/universal apps the orientation locking only works for full screen apps
-- android cannot handle orientation locks like portrait + landscapeleft
+- On iOS the orientation lock is implemented by swizzeling the
+  application:supportedInterfaceOrientationsForWindow: selector on the active
+  app delegate. This is done only if setOrientation is ever called. This means
+  that if you had that selector implemented it will not be called any more.
+
+- On iPad/universal apps the orientation locking only works for full screen apps
+
+- Android cannot handle orientation locks like portrait + landscapeleft. A
+  console.warn will be given in dev mode.
 
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
-  -> display.getRotation() or configuration.getOrientation() ?
-  -> on galaxy tab and phones getRotation works out
+  - display.getRotation() or configuration.getOrientation() ?
+  - on galaxy tab and phones getRotation works out
