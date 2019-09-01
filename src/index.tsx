@@ -11,12 +11,23 @@ export enum InterfaceOrientation {
 
 export type AllowedOrientations = Set<InterfaceOrientation>;
 
+/**
+ * any direction
+ */
 export const AllowedOrientationsAny: AllowedOrientations = new Set<InterfaceOrientation>([
   InterfaceOrientation.PORTRAIT, InterfaceOrientation.LANDSCAPELEFT, InterfaceOrientation.LANDSCAPERIGHT,
 ]);
+
+/**
+ * portrait only
+ */
 export const AllowedOrientationsPortrait: AllowedOrientations = new Set<InterfaceOrientation>([
   InterfaceOrientation.PORTRAIT,
 ]);
+
+/**
+ * landscape only
+ */
 export const AllowedOrientationsLandscape: AllowedOrientations = new Set<InterfaceOrientation>([
   InterfaceOrientation.LANDSCAPELEFT, InterfaceOrientation.LANDSCAPERIGHT,
 ]);
@@ -37,15 +48,19 @@ const androidOrientationMap: { [k: number]: InterfaceOrientation } = {
 };
 
 
+
 export class Orientation {
 
   public static readonly ios = ios;
   public static readonly android = android;
 
-  public static readonly PORTRAIT = InterfaceOrientation.PORTRAIT;
-  public static readonly LANDSCAPELEFT = InterfaceOrientation.LANDSCAPELEFT;
-  public static readonly LANDSCAPERIGHT = InterfaceOrientation.LANDSCAPERIGHT;
+  // public static readonly PORTRAIT = InterfaceOrientation.PORTRAIT;
+  // public static readonly LANDSCAPELEFT = InterfaceOrientation.LANDSCAPELEFT;
+  // public static readonly LANDSCAPERIGHT = InterfaceOrientation.LANDSCAPERIGHT;
 
+  /**
+   * stateful event that provides the current interface orientation
+   */
   public static readonly interfaceOrientation = new StatefulEvent<InterfaceOrientation>(
     (() => {
       if (ios.Module && ios.Module.initialOrientation) {
@@ -90,6 +105,9 @@ export class Orientation {
     }
   );
 
+  /**
+   * set the allowed orientations globally
+   */
   public static setAllowedOrientations(orientations: AllowedOrientations) {
     if (ios.Module) {
       ios.Module.setOrientationMask(
@@ -122,6 +140,11 @@ export class Orientation {
   }
 
   private static allowedOrientationsStack: AllowedOrientations[] = [];
+
+  /**
+   * lock the allowed orientations to orientations until lock is released
+   * pushAllowedOrientations(...).release()
+   */
   public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
@@ -138,11 +161,15 @@ export class Orientation {
 
 
 export interface OrientationConsumerProps {
-  children: (orientation: Orientation) => React.ReactElement;
+  children: (orientation: InterfaceOrientation) => React.ReactElement;
 }
 
+/**
+ * consume the current orientation. takes a function as child that gets passed
+ * the current orientation.
+ */
 export class OrientationConsumer extends React.PureComponent<OrientationConsumerProps, {
-  orientation: Orientation;
+  orientation: InterfaceOrientation;
 }> {
   public state = { orientation: Orientation.interfaceOrientation.value };
   private subscription?: Releaseable;
@@ -237,16 +264,23 @@ export function withOrientationDecorator<
 
 
 
+/**
+ * lock the orientation to allowed as long as this component is mounted
+ */
 export class OrientationLock extends React.PureComponent<{
-  allowed: AllowedOrientations|'portrait'|'landscape'|'any'|Orientation[];
+  /**
+   * the allowed orientation, any of AllowedOrientations or an array of those.
+   */
+  allowed: 'landscape'|'any'|InterfaceOrientation|InterfaceOrientation[];
+  children?: never;
 }> {
   private lock?: Releaseable;
 
   private resolveAllowed(allowed: OrientationLock['props']['allowed']): AllowedOrientations {
     if (allowed === 'landscape') return AllowedOrientationsLandscape;
     if (allowed === 'any') return AllowedOrientationsAny;
-    if (typeof allowed === 'string') return new Set([allowed]) as AllowedOrientations;
-    if (Array.isArray(allowed)) return new Set(allowed) as AllowedOrientations;
+    if (typeof allowed === 'string') return new Set([allowed]);
+    if (Array.isArray(allowed)) return new Set(allowed);
     return allowed;
   }
 
