@@ -29,8 +29,5 @@ return (
 ```
 
 ## TODO
-- [ ] OrientationLock.allowed -- typing?
 - [ ] android does not trigger orientation change between landscape left and right
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
-- [ ] swizzle delegate only if we want to set the orientation
-- [ ] inline docs

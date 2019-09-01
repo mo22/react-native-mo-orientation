@@ -91,9 +91,10 @@ export class Orientation {
       } else if (android.Events && android.Module) {
         let cur: number|undefined;
         const sub = android.Events.addListener('ReactNativeMoOrientation', (rs) => {
-          if (rs.orientation === cur) return;
-          cur = rs.orientation;
-          emit(androidOrientationMap[rs.orientation]);
+          // rotation vs orientation?
+          if (rs.rotation === cur) return;
+          cur = rs.rotation;
+          emit(androidOrientationMap[rs.rotation]);
         });
         android.Module.enableOrientationEvent(true);
         return () => {

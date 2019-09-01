@@ -24,6 +24,7 @@ export interface Module {
 }
 
 export interface OrientationEvent {
+  rotation: number;
   orientation: number;
 }
 

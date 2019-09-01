@@ -20,6 +20,7 @@ export interface Module {
     getOrientation(): Promise<number>;
 }
 export interface OrientationEvent {
+    rotation: number;
     orientation: number;
 }
 export declare const Module: Module | undefined;
