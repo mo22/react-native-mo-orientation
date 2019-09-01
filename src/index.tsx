@@ -5,8 +5,17 @@ import * as android from './android';
 import { Dimensions, ScaledSize } from 'react-native';
 
 export enum InterfaceOrientation {
+  /**
+   * standard portrait
+   */
   PORTRAIT = 'portrait',
+  /**
+   * rotated 90 ccw
+   */
   LANDSCAPELEFT = 'landscapeLeft',
+  /**
+   * rotated 90 clockwise
+   */
   LANDSCAPERIGHT = 'landscapeRight',
 }
 

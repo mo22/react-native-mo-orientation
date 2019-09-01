@@ -2,14 +2,14 @@ import { EmitterSubscription } from 'react-native';
 export declare enum Orientation {
     Portrait = 1,
     PortraitUpsideDown = 2,
-    LandscapeRight = 3,
-    LandscapeLeft = 4
+    LandscapeLeft = 3,
+    LandscapeRight = 4
 }
 export declare enum OrientationMask {
     Portrait = 2,
     PortraitUpsideDown = 4,
-    LandscapeRight = 8,
-    LandscapeLeft = 16
+    LandscapeLeft = 8,
+    LandscapeRight = 16
 }
 export interface Module {
     initialOrientation: {

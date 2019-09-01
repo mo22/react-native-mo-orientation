@@ -33,3 +33,6 @@ return (
   -> display.getRotation() or configuration.getOrientation() ?
 - [ ] can we get the device orientation as event just like in ios? (i.e. also facing top etc)
   -> no, needs to use accelerometer
+
+- [ ] ios landscape left / right wrong!
+- [ ] ipad locked orientaiton not working? - different field?

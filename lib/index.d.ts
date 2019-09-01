@@ -3,8 +3,17 @@ import { StatefulEvent, Releaseable } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
 export declare enum InterfaceOrientation {
+    /**
+     * standard portrait
+     */
     PORTRAIT = "portrait",
+    /**
+     * rotated 90 ccw
+     */
     LANDSCAPELEFT = "landscapeLeft",
+    /**
+     * rotated 90 clockwise
+     */
     LANDSCAPERIGHT = "landscapeRight"
 }
 export declare type AllowedOrientations = Set<InterfaceOrientation>;
