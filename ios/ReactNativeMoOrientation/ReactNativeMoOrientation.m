@@ -17,8 +17,6 @@ static void methodSwizzle(Class cls1, Class cls2, SEL sel) {
 UIInterfaceOrientationMask g_reactNativeMoOrientationMask = UIInterfaceOrientationMaskPortrait;
 
 @interface ReactNativeMoOrientation : RCTEventEmitter
-+ (void)setup;
-+ (UIInterfaceOrientationMask)supportedInterfaceOrientationsForWindow:(UIWindow *)window;
 @end
 
 @implementation ReactNativeMoOrientation
@@ -33,7 +31,7 @@ RCT_EXPORT_MODULE()
     return @[ @"ReactNativeMoOrientation" ];
 }
 
-+ (void)setup {
++ (void)swizzleSupportedInterfaceOrientationsForWindow {
     static id<UIApplicationDelegate> appDelegate;
     if (appDelegate == nil) {
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:supportedInterfaceOrientationsForWindow:));
@@ -41,13 +39,6 @@ RCT_EXPORT_MODULE()
         [UIApplication sharedApplication].delegate = nil;
         RCTSharedApplication().delegate = appDelegate;
     }
-}
-
-- (instancetype)init {
-    self = [super init];
-    // @TODO: always?
-    [ReactNativeMoOrientation setup];
-    return self;
 }
 
 - (NSDictionary *)constantsToExport {
@@ -62,7 +53,6 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
-//    NSLog(@"ReactNativeMoOrientation.enableSafeAreaEvent %d", enable);
     if (enable) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
@@ -86,15 +76,14 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 }
 
 RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
-//    NSLog(@"ReactNativeMoOrientation.setOrientationMask %d", mask);
     g_reactNativeMoOrientationMask = mask;
     dispatch_async(dispatch_get_main_queue(), ^{
+        [[self class] swizzleSupportedInterfaceOrientationsForWindow];
         [UIViewController attemptRotationToDeviceOrientation];
     });
 }
 
 RCT_EXPORT_METHOD(setOrientation:(int)orientation) {
-//    NSLog(@"ReactNativeMoOrientation.setOrientation %d", orientation);
     dispatch_async(dispatch_get_main_queue(), ^{
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:orientation] forKey:@"orientation"];
