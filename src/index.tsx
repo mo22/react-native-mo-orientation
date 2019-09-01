@@ -153,6 +153,9 @@ export class Orientation {
       } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.SensorLandscape);
       } else if (orientations.has(InterfaceOrientation.PORTRAIT)) {
+        if (__DEV__ && orientations.size !== 1) {
+          console.warn('Orientation.setAllowedOrientations: android does not support mixing portrait with only one landscape mode');
+        }
         android.Module.setRequestedOrientation(android.RequestOrientation.Portrait);
       } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.ReverseLandscape);
