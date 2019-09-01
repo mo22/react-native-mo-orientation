@@ -31,3 +31,4 @@ return (
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
   display.getRotation() or configuration.getOrientation() ?
+- [ ] can we get the device orientation as event just like in ios? (i.e. also facing top etc)
