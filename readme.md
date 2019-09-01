@@ -31,3 +31,4 @@ return (
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
   display.getRotation() or configuration.getOrientation() ?
+  tablets are supposed to return rotation = 0 for orientation landscape?
