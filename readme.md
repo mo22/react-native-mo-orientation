@@ -28,11 +28,11 @@ return (
 )
 ```
 
+## Notes
+- on iPad/universal apps the orientation locking only works for full screen apps
+
+
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
   -> display.getRotation() or configuration.getOrientation() ?
-- [ ] can we get the device orientation as event just like in ios? (i.e. also facing top etc)
-  -> no, needs to use accelerometer
-
-- [ ] ios landscape left / right wrong!
-- [ ] ipad locked orientaiton not working? - different field?
+- [ ] android landscape left/right both the same on old tablet?!
