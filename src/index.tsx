@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StatefulEvent, Releaseable } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
+import { Dimensions, ScaledSize } from 'react-native';
 
 export enum InterfaceOrientation {
   PORTRAIT = 'portrait',
@@ -73,7 +74,8 @@ export class Orientation {
           if (val) Orientation.interfaceOrientation.value = androidOrientationMap[val];
         });
       }
-      return InterfaceOrientation.PORTRAIT;
+      const d = Dimensions.get('window');
+      return (d.height > d.width) ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPELEFT;
     })(),
     (emit) => {
       if (ios.Events && ios.Module) {
@@ -102,7 +104,16 @@ export class Orientation {
           android.Module!.enableOrientationEvent(false);
         };
       } else {
+        let cur: InterfaceOrientation|undefined;
+        const handler = ({ window }: { window: ScaledSize }) => {
+          const orientation = (window.height > window.width) ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPELEFT;
+          if (orientation === cur) return;
+          cur = orientation;
+          emit(orientation);
+        };
+        Dimensions.addEventListener('change', handler);
         return () => {
+          Dimensions.removeEventListener('change', handler);
         };
       }
     }

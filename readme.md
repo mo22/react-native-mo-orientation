@@ -2,6 +2,13 @@
 
 Lets you query and lock the device orientation
 
+## Installation
+
+iOS just works.
+
+For android make sure you got `android:configChanges="orientation|..."` in your
+manifest.
+
 ## Usage
 
 ```ts
