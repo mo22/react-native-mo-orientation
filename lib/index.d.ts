@@ -21,7 +21,13 @@ export declare const AllowedOrientationsPortrait: AllowedOrientations;
  */
 export declare const AllowedOrientationsLandscape: AllowedOrientations;
 export declare class Orientation {
+    /**
+     * native ios functions. use with caution
+     */
     static readonly ios: typeof ios;
+    /**
+     * native android functions. use with caution
+     */
     static readonly android: typeof android;
     /**
      * stateful event that provides the current interface orientation

@@ -50,13 +50,15 @@ const androidOrientationMap: { [k: number]: InterfaceOrientation } = {
 
 
 export class Orientation {
-
+  /**
+   * native ios functions. use with caution
+   */
   public static readonly ios = ios;
-  public static readonly android = android;
 
-  // public static readonly PORTRAIT = InterfaceOrientation.PORTRAIT;
-  // public static readonly LANDSCAPELEFT = InterfaceOrientation.LANDSCAPELEFT;
-  // public static readonly LANDSCAPERIGHT = InterfaceOrientation.LANDSCAPERIGHT;
+  /**
+   * native android functions. use with caution
+   */
+  public static readonly android = android;
 
   /**
    * stateful event that provides the current interface orientation
