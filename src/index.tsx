@@ -273,16 +273,15 @@ export class OrientationLock extends React.PureComponent<{
   /**
    * the allowed orientation, any of AllowedOrientations or an array of those.
    */
-  allowed: 'landscape'|'any'|InterfaceOrientation|InterfaceOrientation[];
+  allowed: 'portrait'|'landscape'|'any'|AllowedOrientations;
   children?: never;
 }> {
   private lock?: Releaseable;
 
   private resolveAllowed(allowed: OrientationLock['props']['allowed']): AllowedOrientations {
     if (allowed === 'landscape') return AllowedOrientationsLandscape;
+    if (allowed === 'portrait') return AllowedOrientationsPortrait;
     if (allowed === 'any') return AllowedOrientationsAny;
-    if (typeof allowed === 'string') return new Set([allowed]);
-    if (Array.isArray(allowed)) return new Set(allowed);
     return allowed;
   }
 

@@ -75,7 +75,7 @@ export declare class OrientationLock extends React.PureComponent<{
     /**
      * the allowed orientation, any of AllowedOrientations or an array of those.
      */
-    allowed: 'landscape' | 'any' | InterfaceOrientation | InterfaceOrientation[];
+    allowed: 'portrait' | 'landscape' | 'any' | AllowedOrientations;
     children?: never;
 }> {
     private lock?;
