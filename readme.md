@@ -9,7 +9,7 @@ import { Orientation, OrientationConsumer, OrientationLock } from 'react-native-
 
 console.log(Orientation.interfaceOrientation.value);
 
-const sub = Orientation.interfaceOrientation.susbscribe((orientation) => {
+const sub = Orientation.interfaceOrientation.subscribe((orientation) => {
 });
 // ...
 sub.release();
@@ -30,5 +30,6 @@ return (
 
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
-  display.getRotation() or configuration.getOrientation() ?
+  -> display.getRotation() or configuration.getOrientation() ?
 - [ ] can we get the device orientation as event just like in ios? (i.e. also facing top etc)
+  -> no, needs to use accelerometer
