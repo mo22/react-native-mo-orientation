@@ -30,9 +30,9 @@ return (
 
 ## Notes
 - on iPad/universal apps the orientation locking only works for full screen apps
-
+- android cannot handle orientation locks like portrait + landscapeleft
 
 ## TODO
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
   -> display.getRotation() or configuration.getOrientation() ?
-- [ ] android landscape left/right both the same on old tablet?!
+  -> on galaxy tab and phones getRotation works out

@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-orientation",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "react-native orientation events and control / lock",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
