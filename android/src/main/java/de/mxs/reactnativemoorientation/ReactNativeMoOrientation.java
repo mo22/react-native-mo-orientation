@@ -26,13 +26,10 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
     private BroadcastReceiver configurationChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("XXX", "configurationChangedReceiver.onReceive " + intent);
-
-            Configuration newConfig = getReactApplicationContext().getResources().getConfiguration();
-
             final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
             if (windowManager == null) throw new RuntimeException("windowManager null");
             final Display display = windowManager.getDefaultDisplay();
+            final Configuration newConfig = getReactApplicationContext().getResources().getConfiguration();
 
             Log.i("XXX", "onConfigurationChanged " + newConfig.orientation + " " + display.getRotation());
 
