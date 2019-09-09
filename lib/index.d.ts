@@ -73,7 +73,7 @@ export declare class OrientationConsumer extends React.PureComponent<Orientation
     render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)> | null) | (new (props: any) => React.Component<any, any, any>)>;
 }
 export interface OrientationInjectedProps {
-    orientation: Orientation;
+    orientation: InterfaceOrientation;
 }
 export declare function withOrientation<Props extends OrientationInjectedProps>(component: React.ComponentType<Props>): (React.ComponentType<Omit<Props, keyof OrientationInjectedProps>>);
 export declare function withOrientationDecorator<Props extends OrientationInjectedProps, ComponentType extends React.ComponentType<Props>>(component: ComponentType & React.ComponentType<Props>): (ComponentType & (new (props: Omit<Props, keyof OrientationInjectedProps>, context?: any) => React.Component<Omit<Props, keyof OrientationInjectedProps>>));

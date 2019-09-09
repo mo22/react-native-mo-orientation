@@ -226,7 +226,7 @@ export class OrientationConsumer extends React.PureComponent<OrientationConsumer
 
 
 export interface OrientationInjectedProps {
-  orientation: Orientation;
+  orientation: InterfaceOrientation;
 }
 
 export function withOrientation<
