@@ -39,6 +39,11 @@ export declare class Orientation {
      */
     static readonly android: typeof android;
     /**
+     * be verbose
+     */
+    static setVerbose(verbose: boolean): void;
+    private static verbose;
+    /**
      * stateful event that provides the current interface orientation
      */
     static readonly interfaceOrientation: StatefulEvent<InterfaceOrientation>;

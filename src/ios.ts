@@ -15,6 +15,7 @@ export enum OrientationMask {
 }
 
 export interface Module {
+  setVerbose(verbose: boolean): void;
   initialOrientation: { deviceOrientation: Orientation; interfaceOrientation: Orientation; };
   enableOrientationEvent(enable: boolean): void;
   setOrientationMask(mask: OrientationMask): void;

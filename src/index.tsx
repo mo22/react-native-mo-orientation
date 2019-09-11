@@ -71,6 +71,20 @@ export class Orientation {
   public static readonly android = android;
 
   /**
+   * be verbose
+   */
+  public static setVerbose(verbose: boolean) {
+    this.verbose = verbose;
+    if (ios.Module) {
+      ios.Module.setVerbose(verbose);
+    } else if (android.Module) {
+      android.Module.setVerbose(verbose);
+    }
+  }
+
+  private static verbose = false;
+
+  /**
    * stateful event that provides the current interface orientation
    */
   public static readonly interfaceOrientation = new StatefulEvent<InterfaceOrientation>(
@@ -132,6 +146,7 @@ export class Orientation {
    * set the allowed orientations globally
    */
   public static setAllowedOrientations(orientations: AllowedOrientations) {
+    if (this.verbose) console.log('ReactNativeMoOrientation.setAllowedOrientations', orientations);
     if (ios.Module) {
       ios.Module.setOrientationMask(
         (orientations.has(InterfaceOrientation.PORTRAIT) ? ios.OrientationMask.Portrait : 0) +
@@ -172,11 +187,13 @@ export class Orientation {
    * pushAllowedOrientations(...).release()
    */
   public static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable {
+    if (this.verbose) console.log('ReactNativeMoOrientation.pushAllowedOrientations', orientations);
     this.allowedOrientationsStack.push(orientations);
     this.setAllowedOrientations(orientations);
     return {
       release: () => {
         this.allowedOrientationsStack = this.allowedOrientationsStack.filter((i) => i !== orientations);
+        if (this.verbose) console.log('ReactNativeMoOrientation.pushAllowedOrientations release');
         this.setAllowedOrientations(this.allowedOrientationsStack.length ? this.allowedOrientationsStack.slice(-1)[0] : AllowedOrientationsPortrait);
       },
     };

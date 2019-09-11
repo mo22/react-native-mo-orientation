@@ -18,6 +18,7 @@ export enum RequestOrientation {
 }
 
 export interface Module {
+  setVerbose(verbose: boolean): void;
   enableOrientationEvent(enable: boolean): void;
   setRequestedOrientation(orientation: RequestOrientation): void;
   getOrientation(): Promise<number>;

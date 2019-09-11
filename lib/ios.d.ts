@@ -12,6 +12,7 @@ export declare enum OrientationMask {
     LandscapeRight = 16
 }
 export interface Module {
+    setVerbose(verbose: boolean): void;
     initialOrientation: {
         deviceOrientation: Orientation;
         interfaceOrientation: Orientation;
