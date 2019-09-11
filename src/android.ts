@@ -8,6 +8,8 @@ export enum Orientation {
 }
 
 export enum RequestOrientation {
+  Unset = -2,
+  Unspecified = -1,
   Landscape = 0,
   Portrait = 1,
   Sensor = 4,

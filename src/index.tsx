@@ -169,9 +169,8 @@ export class Orientation {
       }
     } else if (android.Module) {
       if (orientations === undefined) {
-        orientations = AllowedOrientationsPortrait;
-      }
-      if (orientations.has(InterfaceOrientation.PORTRAIT) && orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
+        android.Module.setRequestedOrientation(android.RequestOrientation.Unspecified);
+      } else if (orientations.has(InterfaceOrientation.PORTRAIT) && orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.Sensor);
       } else if (orientations.has(InterfaceOrientation.LANDSCAPELEFT) && orientations.has(InterfaceOrientation.LANDSCAPERIGHT)) {
         android.Module.setRequestedOrientation(android.RequestOrientation.SensorLandscape);

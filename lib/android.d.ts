@@ -6,6 +6,8 @@ export declare enum Orientation {
     LandscapeRight = 3
 }
 export declare enum RequestOrientation {
+    Unset = -2,
+    Unspecified = -1,
     Landscape = 0,
     Portrait = 1,
     Sensor = 4,
