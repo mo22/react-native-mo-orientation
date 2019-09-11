@@ -18,7 +18,7 @@ export interface Module {
         interfaceOrientation: Orientation;
     };
     enableOrientationEvent(enable: boolean): void;
-    setOrientationMask(mask: OrientationMask): void;
+    setOrientationMask(mask: OrientationMask | -1): void;
     setOrientation(orientation: Orientation): void;
 }
 export interface OrientationEvent {

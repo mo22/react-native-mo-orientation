@@ -49,8 +49,9 @@ export declare class Orientation {
     static readonly interfaceOrientation: StatefulEvent<InterfaceOrientation>;
     /**
      * set the allowed orientations globally
+     * undefined means not to interfere with the default
      */
-    static setAllowedOrientations(orientations: AllowedOrientations): void;
+    static setAllowedOrientations(orientations: AllowedOrientations | undefined): void;
     private static allowedOrientationsStack;
     /**
      * lock the allowed orientations to orientations until lock is released
