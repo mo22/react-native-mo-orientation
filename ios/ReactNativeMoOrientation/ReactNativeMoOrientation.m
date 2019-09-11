@@ -16,7 +16,9 @@ static void methodSwizzle(Class cls1, Class cls2, SEL sel) {
 
 UIInterfaceOrientationMask g_reactNativeMoOrientationMask = UIInterfaceOrientationMaskPortrait;
 
-@interface ReactNativeMoOrientation : RCTEventEmitter
+@interface ReactNativeMoOrientation : RCTEventEmitter {
+    BOOL _verbose;
+}
 @end
 
 @implementation ReactNativeMoOrientation
@@ -52,6 +54,10 @@ RCT_EXPORT_MODULE()
     return constants;
 }
 
+RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
+    _verbose = verbose;
+}
+
 RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
     if (enable) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -69,6 +75,7 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (_verbose) NSLog(@"ReactNativeMoOrientation.deviceOrientationDidChange device=%ld interface=%ld", (long)deviceOrientation, (long)interfaceOrientation);
     [self sendEventWithName:@"ReactNativeMoOrientation" body:@{
         @"deviceOrientation": @(deviceOrientation),
         @"interfaceOrientation": @(interfaceOrientation),
@@ -76,6 +83,7 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 }
 
 RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
+    if (_verbose) NSLog(@"ReactNativeMoOrientation.setOrientationMask %d", mask);
     g_reactNativeMoOrientationMask = mask;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[self class] swizzleSupportedInterfaceOrientationsForWindow];
@@ -84,6 +92,7 @@ RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
 }
 
 RCT_EXPORT_METHOD(setOrientation:(int)orientation) {
+    if (_verbose) NSLog(@"ReactNativeMoOrientation.setOrientation %d", orientation);
     dispatch_async(dispatch_get_main_queue(), ^{
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:orientation] forKey:@"orientation"];
