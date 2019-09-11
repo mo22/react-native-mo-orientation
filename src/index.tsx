@@ -94,7 +94,7 @@ export class Orientation {
       }
       if (android.Module) {
         android.Module.getOrientation().then((val) => {
-          if (val) Orientation.interfaceOrientation.value = androidOrientationMap[val];
+          if (val) Orientation.interfaceOrientation.UNSAFE_setValue(androidOrientationMap[val]);
         });
       }
       const d = Dimensions.get('window');
