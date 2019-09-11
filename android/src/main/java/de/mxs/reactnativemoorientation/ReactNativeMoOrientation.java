@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -28,22 +29,17 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
             if (windowManager == null) throw new RuntimeException("windowManager null");
             final Display display = windowManager.getDefaultDisplay();
             final Configuration newConfig = getReactApplicationContext().getResources().getConfiguration();
-//            Log.i("XXX", "onConfigurationChanged " + newConfig.orientation + " " + display.getRotation());
-//            if (display.getRotation() == Surface.ROTATION_0) Log.i("XXX", "rotation=ROTATION_0");
-//            if (display.getRotation() == Surface.ROTATION_90) Log.i("XXX", "rotation=ROTATION_90");
-//            if (display.getRotation() == Surface.ROTATION_180) Log.i("XXX", "rotation=ROTATION_180");
-//            if (display.getRotation() == Surface.ROTATION_270) Log.i("XXX", "rotation=ROTATION_270 ");
-//            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) Log.i("XXX", "orientation=ORIENTATION_PORTRAIT");
-//            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) Log.i("XXX", "orientation=ORIENTATION_LANDSCAPE");
+            if (verbose) Log.i("ReactNativeMoOrientatio", "onConfigurationChanged " + newConfig.orientation + " " + display.getRotation());
             WritableMap args = Arguments.createMap();
             args.putInt("orientation", newConfig.orientation);
             args.putInt("rotation", display.getRotation());
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoOrientation", args);
-
         }
     };
 
     private boolean orientationEventEnabled = false;
+
+    private boolean verbose = false;
 
     ReactNativeMoOrientation(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
@@ -61,9 +57,16 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
         super.onCatalystInstanceDestroy();
     }
 
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
     @SuppressWarnings({"unused", "WeakerAccess"})
     @ReactMethod
     public void enableOrientationEvent(boolean enable) {
+        if (verbose) Log.i("ReactNativeMoOrientatio", "enableOrientationEvent " + enable);
         if (enable != orientationEventEnabled) {
             orientationEventEnabled = enable;
             if (enable) {
@@ -79,6 +82,7 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
     @SuppressWarnings("unused")
     @ReactMethod
     public void setRequestedOrientation(int orientation) {
+        if (verbose) Log.i("ReactNativeMoOrientatio", "setRequestedOrientation " + orientation);
         final Activity activity = getCurrentActivity();
         if (activity == null) return;
         activity.setRequestedOrientation(orientation);
