@@ -46,4 +46,9 @@
 #endif
 }
 
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  NSLog(@"AppDelegate supportedInterfaceOrientationsForWindow");
+  return UIInterfaceOrientationMaskAll;
+}
+
 @end
