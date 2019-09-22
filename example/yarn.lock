@@ -5356,10 +5356,10 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-orientation@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/react-native-mo-orientation/-/react-native-mo-orientation-0.1.6.tgz#34f4da5848b3590adfa6e71aa25066baa1a9b364"
-  integrity sha512-uIrp7jj6eAHsDnrj2+F0Rl+QdTt5I3ofY7Hb1DHf/PaJIBXXjngdw/OfPBoKXRPJwTB0mngkcnaRULssMc4hDQ==
+react-native-mo-orientation@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-mo-orientation/-/react-native-mo-orientation-0.1.7.tgz#dd6f64aed11f65f401f03f7ac2bbc9e4a631ba51"
+  integrity sha512-LeXhtbHWL2KNKRJhwZuSVUVdt2CsI9MHTOq4P/JYCXD6ePx2I2y81O6w7fMQK2vJlgSpohe7/xy6xGYR0IQOVw==
   dependencies:
     mo-core "^0.1.3"
 
