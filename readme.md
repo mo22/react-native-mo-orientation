@@ -2,6 +2,9 @@
 
 Lets you query and lock the device orientation
 
+## Installation
+Install just like your ordinary react-native module.
+
 ## Usage
 
 ```ts
