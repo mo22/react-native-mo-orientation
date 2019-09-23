@@ -32,7 +32,7 @@ return (
 ```
 
 ## Notes
-- On iOS the orientation lock is implemented by swizzeling the
+- On iOS the orientation lock is implemented by swizzling the
   application:supportedInterfaceOrientationsForWindow: selector on the active
   app delegate. This is done only if setOrientation is ever called. This means
   that if you had that selector implemented it will not be called any more.
