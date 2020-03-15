@@ -92,14 +92,26 @@ RCT_EXPORT_METHOD(enableOrientationEvent:(BOOL)enable) {
 }
 
 RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
-    if (_verbose) NSLog(@"ReactNativeMoOrientation.setOrientationMask %d", mask);
+    if (1 || _verbose) NSLog(@"ReactNativeMoOrientation.setOrientationMask %d", mask);
     g_reactNativeMoOrientationMask = mask;
     [[self class] swizzleSupportedInterfaceOrientationsForWindow];
     [UIViewController attemptRotationToDeviceOrientation];
+//    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+//    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationUnknown] forKey:@"orientation"];
+//    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:[[UIDevice currentDevice] orientation]] forKey:@"orientation"];
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [UIViewController attemptRotationToDeviceOrientation];
+    NSLog(@"XXX 1 %ld", (long)[[UIDevice currentDevice] orientation]);
+    NSLog(@"XXX 2 %ld", (long)[[UIApplication sharedApplication] statusBarOrientation]);
+    // https://github.com/wonday/react-native-orientation-locker/blob/master/iOS/RCTOrientation/Orientation.m
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationUnknown] forKey:@"orientation"];
+        [UIViewController attemptRotationToDeviceOrientation];
+    }];
 }
 
 RCT_EXPORT_METHOD(setOrientation:(int)orientation) {
-    if (_verbose) NSLog(@"ReactNativeMoOrientation.setOrientation %d", orientation);
+    if (1 || _verbose) NSLog(@"ReactNativeMoOrientation.setOrientation %d", orientation);
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:orientation] forKey:@"orientation"];
 }
