@@ -46,3 +46,5 @@ return (
 - [ ] check which is the correct field for orientations (check tablet etc.?) on android
   - display.getRotation() or configuration.getOrientation() ?
   - on galaxy tab and phones getRotation works out
+- [ ] ios does not rotate back if allowed orientations are changed
+
