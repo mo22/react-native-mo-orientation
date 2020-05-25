@@ -4,6 +4,7 @@
 #import <objc/runtime.h>
 
 static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
+    // NSLog(@"methodSwizzle %@ %s <-> %@ %s", cls1, sel_getName(sel1), cls2, sel_getName(sel2));
     Method m1 = class_getInstanceMethod(cls1, sel1); // original
     Method m2 = class_getInstanceMethod(cls2, sel2); // new
     assert(m2);
@@ -42,16 +43,13 @@ RCT_EXPORT_MODULE()
 + (void)swizzleSupportedInterfaceOrientationsForWindow {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-//        NSLog(@"swizzleSupportedInterfaceOrientationsForWindow go");
         id<UIApplicationDelegate> appDelegate = [RCTSharedApplication() delegate];
         methodSwizzle(
             [appDelegate class], @selector(application:supportedInterfaceOrientationsForWindow:),
             [self class], @selector(swizzled_application:supportedInterfaceOrientationsForWindow:)
         );
-        // @TODO: is this needed?
-        // -> looks like it...
-        // -> this cause a crash in the example?
-//        RCTSharedApplication().delegate = nil;
+        // @TODO: is this needed? this cause a crash in the example? check if it works without existing method in AppDelegate
+        // RCTSharedApplication().delegate = nil;
         RCTSharedApplication().delegate = appDelegate;
     });
 }
