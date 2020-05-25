@@ -101,8 +101,6 @@ RCT_EXPORT_METHOD(setOrientationMask:(int)mask) {
 //    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:[[UIDevice currentDevice] orientation]] forKey:@"orientation"];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [UIViewController attemptRotationToDeviceOrientation];
-    NSLog(@"XXX 1 %ld", (long)[[UIDevice currentDevice] orientation]);
-    NSLog(@"XXX 2 %ld", (long)[[UIApplication sharedApplication] statusBarOrientation]);
     // https://github.com/wonday/react-native-orientation-locker/blob/master/iOS/RCTOrientation/Orientation.m
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
         [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIDeviceOrientationUnknown] forKey:@"orientation"];
