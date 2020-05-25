@@ -42,12 +42,16 @@ RCT_EXPORT_MODULE()
 + (void)swizzleSupportedInterfaceOrientationsForWindow {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+//        NSLog(@"swizzleSupportedInterfaceOrientationsForWindow go");
         id<UIApplicationDelegate> appDelegate = [RCTSharedApplication() delegate];
         methodSwizzle(
             [appDelegate class], @selector(application:supportedInterfaceOrientationsForWindow:),
             [self class], @selector(swizzled_application:supportedInterfaceOrientationsForWindow:)
         );
-        RCTSharedApplication().delegate = nil; // @TODO: is this needed? looks like it...
+        // @TODO: is this needed?
+        // -> looks like it...
+        // -> this cause a crash in the example?
+//        RCTSharedApplication().delegate = nil;
         RCTSharedApplication().delegate = appDelegate;
     });
 }
@@ -115,6 +119,7 @@ RCT_EXPORT_METHOD(setOrientation:(int)orientation) {
 }
 
 - (UIInterfaceOrientationMask)swizzled_application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+    if (_verbose) NSLog(@"ReactNativeMoOrientation.swizzledSupportedInterfaceOrientationsForWindow");
     if (g_reactNativeMoOrientationMask == -1) {
         if ([self respondsToSelector:@selector(swizzled_application:supportedInterfaceOrientationsForWindow:)]) {
             return [self swizzled_application:application supportedInterfaceOrientationsForWindow:window];
