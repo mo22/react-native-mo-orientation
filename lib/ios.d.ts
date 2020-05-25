@@ -27,5 +27,5 @@ export interface OrientationEvent {
 }
 export declare const Module: Module | undefined;
 export declare const Events: {
-    addListener(eventType: "ReactNativeMoOrientation", listener: (event: OrientationEvent) => void): EmitterSubscription;
+    addListener(eventType: 'ReactNativeMoOrientation', listener: (event: OrientationEvent) => void): EmitterSubscription;
 } | undefined;
