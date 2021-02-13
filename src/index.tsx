@@ -210,43 +210,26 @@ export class Orientation {
 
 
 
-export interface OrientationConsumerProps {
-  children: (orientation: InterfaceOrientation) => React.ReactElement;
-}
-
 /**
  * consume the current orientation. takes a function as child that gets passed
  * the current orientation.
  */
-export class OrientationConsumer extends React.PureComponent<OrientationConsumerProps, {
-  orientation: InterfaceOrientation;
-}> {
-  public state = { orientation: Orientation.interfaceOrientation.value };
-  private subscription?: Releaseable;
-
-  public constructor(props: OrientationConsumerProps) {
-    super(props);
-    this.state.orientation = Orientation.interfaceOrientation.value;
-  }
-
-  public componentDidMount() {
-    this.subscription = Orientation.interfaceOrientation.subscribe((value) => {
-      this.setState({ orientation: value });
-    });
-  }
-
-  public componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription.release();
-      this.subscription = undefined;
-    }
-  }
-
-  public render() {
-    return this.props.children(this.state.orientation);
-  }
+export interface OrientationConsumerProps {
+  children: (orientation: InterfaceOrientation) => React.ReactElement;
 }
 
+export function OrientationConsumer(props: OrientationConsumerProps) {
+  const [value, setValue] = React.useState(Orientation.interfaceOrientation.value);
+  React.useEffect(() => {
+    const subscription = Orientation.interfaceOrientation.subscribe((value) => {
+      setValue(value);
+    });
+    return () => {
+      subscription.release();
+    };
+  }, []);
+  return props.children(value);
+}
 
 
 export interface OrientationInjectedProps {

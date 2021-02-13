@@ -59,25 +59,14 @@ export declare class Orientation {
      */
     static pushAllowedOrientations(orientations: AllowedOrientations): Releaseable;
 }
-export interface OrientationConsumerProps {
-    children: (orientation: InterfaceOrientation) => React.ReactElement;
-}
 /**
  * consume the current orientation. takes a function as child that gets passed
  * the current orientation.
  */
-export declare class OrientationConsumer extends React.PureComponent<OrientationConsumerProps, {
-    orientation: InterfaceOrientation;
-}> {
-    state: {
-        orientation: InterfaceOrientation;
-    };
-    private subscription?;
-    constructor(props: OrientationConsumerProps);
-    componentDidMount(): void;
-    componentWillUnmount(): void;
-    render(): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, string | any | (new (props: any) => React.Component<any, any, any>)> | null) | (new (props: any) => React.Component<any, any, any>)>;
+export interface OrientationConsumerProps {
+    children: (orientation: InterfaceOrientation) => React.ReactElement;
 }
+export declare function OrientationConsumer(props: OrientationConsumerProps): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, any> | null) | (new (props: any) => React.Component<any, any, any>)>;
 export interface OrientationInjectedProps {
     orientation: InterfaceOrientation;
 }
