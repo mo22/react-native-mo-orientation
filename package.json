@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-orientation",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "react-native orientation events and control / lock",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,13 +13,13 @@
     "*.podspec"
   ],
   "devDependencies": {
-    "@types/react-native": "^0.63.49",
-    "react": "17.0.1",
-    "react-native": "0.63.4",
-    "typescript": "^4.1.5"
+    "@types/react-native": "^0.64.13",
+    "react": "^17.0.2",
+    "react-native": "^0.65.1",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
-    "mo-core": "^0.1.5"
+    "mo-core": "^0.1.6"
   },
   "peerDependencies": {
     "react": "^17.0.1",

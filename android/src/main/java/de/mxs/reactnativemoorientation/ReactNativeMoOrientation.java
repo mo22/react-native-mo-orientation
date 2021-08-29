@@ -97,4 +97,11 @@ public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
         promise.resolve(display.getRotation());
     }
 
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void addListener(String eventName) {}
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void removeListeners(double count) {}
 }

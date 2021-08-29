@@ -66,7 +66,7 @@ export declare class Orientation {
 export interface OrientationConsumerProps {
     children: (orientation: InterfaceOrientation) => React.ReactElement;
 }
-export declare function OrientationConsumer(props: OrientationConsumerProps): React.ReactElement<any, string | ((props: any) => React.ReactElement<any, any> | null) | (new (props: any) => React.Component<any, any, any>)>;
+export declare function OrientationConsumer(props: OrientationConsumerProps): React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 export interface OrientationInjectedProps {
     orientation: InterfaceOrientation;
 }
