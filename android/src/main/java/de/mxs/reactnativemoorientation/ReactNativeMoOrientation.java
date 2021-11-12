@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 public class ReactNativeMoOrientation extends ReactContextBaseJavaModule {
 
-    private BroadcastReceiver configurationChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver configurationChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final WindowManager windowManager = (WindowManager)getReactApplicationContext().getSystemService(Context.WINDOW_SERVICE);
