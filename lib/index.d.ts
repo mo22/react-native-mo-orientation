@@ -16,7 +16,7 @@ export declare enum InterfaceOrientation {
      */
     LANDSCAPERIGHT = "landscapeRight"
 }
-export declare type AllowedOrientations = Set<InterfaceOrientation>;
+export type AllowedOrientations = Set<InterfaceOrientation>;
 /**
  * any direction
  */

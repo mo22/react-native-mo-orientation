@@ -44,14 +44,14 @@ export const AllowedOrientationsLandscape: AllowedOrientations = new Set<Interfa
 
 
 
-const iosOrientationMap: { [k: number]: InterfaceOrientation } = {
+const iosOrientationMap: { [k: number]: InterfaceOrientation; } = {
   [ios.Orientation.Portrait]: InterfaceOrientation.PORTRAIT,
   [ios.Orientation.PortraitUpsideDown]: InterfaceOrientation.PORTRAIT,
   [ios.Orientation.LandscapeLeft]: InterfaceOrientation.LANDSCAPELEFT,
   [ios.Orientation.LandscapeRight]: InterfaceOrientation.LANDSCAPERIGHT,
 };
 
-const androidOrientationMap: { [k: number]: InterfaceOrientation } = {
+const androidOrientationMap: { [k: number]: InterfaceOrientation; } = {
   [android.Orientation.Portrait]: InterfaceOrientation.PORTRAIT,
   [android.Orientation.LandscapeLeft]: InterfaceOrientation.LANDSCAPELEFT,
   [android.Orientation.LandscapeRight]: InterfaceOrientation.LANDSCAPERIGHT,
@@ -102,7 +102,7 @@ export class Orientation {
     })(),
     (emit) => {
       if (ios.Events && ios.Module) {
-        let cur: number|undefined;
+        let cur: number | undefined;
         const sub = ios.Events.addListener('ReactNativeMoOrientation', (rs) => {
           if (rs.interfaceOrientation === cur) return;
           cur = rs.interfaceOrientation;
@@ -114,7 +114,7 @@ export class Orientation {
           ios.Module!.enableOrientationEvent(false);
         };
       } else if (android.Events && android.Module) {
-        let cur: number|undefined;
+        let cur: number | undefined;
         const sub = android.Events.addListener('ReactNativeMoOrientation', (rs) => {
           // rotation vs orientation?
           if (rs.rotation === cur) return;
@@ -127,16 +127,16 @@ export class Orientation {
           android.Module!.enableOrientationEvent(false);
         };
       } else {
-        let cur: InterfaceOrientation|undefined;
-        const handler = ({ window }: { window: ScaledSize }) => {
+        let cur: InterfaceOrientation | undefined;
+        const handler = ({ window }: { window: ScaledSize; }) => {
           const orientation = (window.height > window.width) ? InterfaceOrientation.PORTRAIT : InterfaceOrientation.LANDSCAPELEFT;
           if (orientation === cur) return;
           cur = orientation;
           emit(orientation);
         };
-        Dimensions.addEventListener('change', handler);
+        const sub = Dimensions.addEventListener('change', handler);
         return () => {
-          Dimensions.removeEventListener('change', handler);
+          sub.remove();
         };
       }
     }
@@ -146,7 +146,7 @@ export class Orientation {
    * set the allowed orientations globally
    * undefined means not to interfere with the default
    */
-  public static setAllowedOrientations(orientations: AllowedOrientations|undefined) {
+  public static setAllowedOrientations(orientations: AllowedOrientations | undefined) {
     if (this.verbose) console.log('ReactNativeMoOrientation.setAllowedOrientations', orientations);
     if (ios.Module) {
       if (orientations === undefined) {
@@ -238,14 +238,14 @@ export interface OrientationInjectedProps {
 
 export function withOrientation<
   Props extends OrientationInjectedProps,
-  // Props,
+// Props,
 >(
   component: React.ComponentType<Props>
   // component: React.ComponentType<Props & SafeAreaInjectedProps>
 ): (
-  // React.ComponentType<Props>
-  React.ComponentType<Omit<Props, keyof OrientationInjectedProps>>
-) {
+    // React.ComponentType<Props>
+    React.ComponentType<Omit<Props, keyof OrientationInjectedProps>>
+  ) {
   const Component = component as React.ComponentType<any>; // @TODO hmpf.
   // const Component = component;
   return React.forwardRef((props: Omit<Props, keyof OrientationInjectedProps>, ref) => (
@@ -263,9 +263,9 @@ export function withOrientationDecorator<
 >(
   component: ComponentType & React.ComponentType<Props>
 ): (
-  ComponentType &
-  ( new (props: Omit<Props, keyof OrientationInjectedProps>, context?: any) => React.Component<Omit<Props, keyof OrientationInjectedProps>> )
-) {
+    ComponentType &
+    (new (props: Omit<Props, keyof OrientationInjectedProps>, context?: any) => React.Component<Omit<Props, keyof OrientationInjectedProps>>)
+  ) {
   const Component = component as any;
   const res = (props: Omit<Props, keyof OrientationInjectedProps>) => (
     <OrientationConsumer>
@@ -304,7 +304,7 @@ export class OrientationLock extends React.PureComponent<{
   /**
    * the allowed orientation, any of AllowedOrientations or an array of those.
    */
-  allowed: 'portrait'|'landscape'|'any'|AllowedOrientations;
+  allowed: 'portrait' | 'landscape' | 'any' | AllowedOrientations;
   children?: never;
 }> {
   private lock?: Releaseable;
